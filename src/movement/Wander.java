@@ -11,7 +11,7 @@ import utility.Utility;
 
 public class Wander
 {
-    static float timeToTargetRotation = 10f;
+    static float timeToTargetRotation = 100f;
 
     public static KinematicOutput getKinematic(GameObject character, float maxVelocity, float maxRotation)
     {

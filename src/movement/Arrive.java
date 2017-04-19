@@ -32,7 +32,7 @@ public class Arrive
         SteeringOutput output = new SteeringOutput();
         float targetSpeed;
 
-        PVector direction = new PVector(target.x - character.getPosition().x, target.y - character.getPosition().y);
+        PVector direction = PVector.sub(target, character.getPosition()); //new PVector(target.x - character.getPosition().x, target.y - character.getPosition().y);
         float distance = direction.mag();
 
         if (distance < character.getLinearROS())

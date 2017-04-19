@@ -59,4 +59,9 @@ public class Engine extends PApplet
     {
         player.shoot();
     }*/
+
+    public void mouseClicked()
+    {
+        player.updateTarget();
+    }
 }

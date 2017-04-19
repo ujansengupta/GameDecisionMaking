@@ -9,9 +9,12 @@ public class Selector extends Task
     public Task.returnType run()
     {
         for (Task t : children)
-            if (t.run() == returnType.SUCCESS)
-                return returnType.SUCCESS;
+        {
+            returnType result = t.run();
+            if (result == returnType.SUCCEEDED || result == returnType.RUNNING)
+                return returnType.SUCCEEDED;
+        }
 
-        return returnType.FAILURE;
+        return returnType.FAILED;
     }
 }

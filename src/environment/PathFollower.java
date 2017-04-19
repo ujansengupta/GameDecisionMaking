@@ -4,6 +4,7 @@ import movement.Align;
 import movement.Seek;
 import objects.GameObject;
 import processing.core.PVector;
+import utility.GameConstants;
 import utility.Utility;
 
 import java.util.ArrayList;
@@ -32,11 +33,11 @@ public class PathFollower
 
     public boolean reachedTarget;
 
-    public PathFollower(GameObject character, PVector numTiles, PVector tileSize)
+    public PathFollower(GameObject character)
     {
         this.character = character;
-        this.numTiles = numTiles;
-        this.tileSize = tileSize;
+        this.numTiles = GameConstants.NUM_TILES;
+        this.tileSize = GameConstants.TILE_SIZE;
 
         search = new GraphSearch();
 

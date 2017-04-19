@@ -16,7 +16,7 @@ public class Align
         float targetRotation;
         SteeringOutput output = new SteeringOutput();
 
-        PVector direction = new PVector(target.x - character.getPosition().x, target.y - character.getPosition().y);
+        PVector direction = PVector.sub(target, character.getPosition());
 
         if (direction.mag() == 0)
             return new SteeringOutput();

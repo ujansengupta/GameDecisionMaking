@@ -1,6 +1,7 @@
 package objects;
 
 import engine.Engine;
+import environment.Environment;
 import environment.Obstacle;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -44,12 +45,9 @@ public class Bullet
 
     public boolean outOfBounds()
     {
-        for (Obstacle o : Engine.staticObjects)
-            if (o.contains(Utility.getGridLocation(this.position)))
-                return true;
-
-        return (this.position.x < GameConstants.SCR_OFFSET || this.position.x > GameConstants.SCR_WIDTH - GameConstants.SCR_OFFSET ||
-                this.position.y < GameConstants.SCR_OFFSET || this.position.y > GameConstants.SCR_HEIGHT - GameConstants.SCR_OFFSET);
+        return ((Environment.invalidNodes.contains(Utility.getGridIndex(this.position))) ||
+                (this.position.x < GameConstants.SCR_OFFSET || this.position.x > GameConstants.SCR_WIDTH - GameConstants.SCR_OFFSET ||
+                        this.position.y < GameConstants.SCR_OFFSET || this.position.y > GameConstants.SCR_HEIGHT - GameConstants.SCR_OFFSET));
     }
 
     public boolean hasHit(GameObject obj){
@@ -59,5 +57,11 @@ public class Bullet
         }
         return false;
     }
+
+    public boolean hasHit(Obstacle obj)
+    {
+        return(obj.getTileIndices().contains(Utility.getGridIndex(this.position)));
+    }
+
 
 }

@@ -13,28 +13,13 @@ import utility.GameConstants;
 public abstract class Enemy extends GameObject
 {
 
-    public enum stateList
-    {
-        ATTACKPLAYER, SEEKTOOTH, WANDER, AVOID, SHOOTBULLETS
-    }
+    public static int shootRadius = 150;
+    public static PathFollower pathFollower;
 
-    public int PURSUE_RADIUS;
-
-    public GameObject finalTarget;
-    public PathFollower pathFollower;
-
-    public boolean isFollowingPath;
-
-    public float contactDamage;
-
-    public Enemy(PApplet app, PVector color, float size, float posX, float posY, float orientation, int life, int PursueRadius)
+    public Enemy(PApplet app, PVector color, float size, float posX, float posY, float orientation, int life)
     {
         super (app, color, size, posX, posY, orientation, life);
-
-        isFollowingPath = false;
-        PURSUE_RADIUS = PursueRadius;
-        pathFollower = new PathFollower(this, Environment.numTiles, Environment.tileSize);
-        contactDamage = GameConstants.DEFAULT_CONTACT_DAMAGE;
+        pathFollower = new PathFollower(this);
     }
 
     public abstract void behaviour();
@@ -43,11 +28,6 @@ public abstract class Enemy extends GameObject
 
     public abstract void avoidObstacle();
 
-
-    public GameObject getFinalTarget()
-    {
-        return finalTarget;
-    }
 
 
 }

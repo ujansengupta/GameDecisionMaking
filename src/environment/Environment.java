@@ -22,6 +22,8 @@ public class Environment
     public static PVector tileSize;
     public static PVector numTiles;
 
+    public PVector centerColor = new PVector(255, 0, 0);
+
     public static Graph gameGraph;
 
     public Environment(PApplet app)
@@ -42,7 +44,6 @@ public class Environment
 
     public void update()
     {
-
         drawObstacles();
     }
 
@@ -89,10 +90,10 @@ public class Environment
         /* Clockwise from left */
 
         /* Outer layer */
-        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.25f * numTiles.y), new PVector(15, 4))); //top
-        obstacles.add(new Obstacle(app, new PVector(0.25f * numTiles.x, 0.5f * numTiles.y), new PVector(4, 15))); //left
-        obstacles.add(new Obstacle(app, new PVector(0.75f * numTiles.x, 0.5f * numTiles.y), new PVector(4, 15))); //right
-        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.75f * numTiles.y), new PVector(15, 4))); //bot
+        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.25f * numTiles.y), new PVector(15, 5))); //top
+        obstacles.add(new Obstacle(app, new PVector(0.25f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //left
+        obstacles.add(new Obstacle(app, new PVector(0.75f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //right
+        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.75f * numTiles.y), new PVector(15, 5))); //bot
 
         /* Tooth nodes are not considered invalid */
 

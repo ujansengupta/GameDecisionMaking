@@ -35,4 +35,5 @@ public class Utility
     {
         return new PVector((int)(position.x/GameConstants.TILE_SIZE.x), (int) (position.y/GameConstants.TILE_SIZE.y));
     }
+
 }

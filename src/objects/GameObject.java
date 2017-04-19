@@ -54,6 +54,7 @@ public class GameObject extends AbstractObject implements Movable
         setDefaults();
     }
 
+
     public void update()
     {
         if (outOfBounds())
@@ -68,21 +69,16 @@ public class GameObject extends AbstractObject implements Movable
         position.x += velocity.x;
         position.y += velocity.y;
 
-        orientation = (velocity.mag() > 0) ? velocity.heading() : orientation;
-        orientation += rotation;
+        if (rotation == 0)
+            orientation = (velocity.mag() > 0) ? velocity.heading() : orientation;
+        else
+            orientation += rotation;
 
         if (crumbs != null)
             crumbs.drawCrumbs(crumbTrail);
 
         drawShape();
-        drawLifeBar();
-    }
-
-    /* Initialize breadcrumbs */
-
-    public void initCrumbs()
-    {
-        crumbs = new BreadCrumbs(this.app, this);
+        //drawLifeBar();
     }
 
 
@@ -173,6 +169,12 @@ public class GameObject extends AbstractObject implements Movable
 
         if(steering.angular == 0)
             targetRotationWander = Wander.randomBinomial() * maxRot;
+    }
+
+    @Override
+    public void Pursue(GameObject target)
+    {
+        setVelocity(Seek.getKinematic(this, PVector.add(target.getPosition(), target.getVelocity())).velocity);
     }
 
     @Override
@@ -310,6 +312,12 @@ public class GameObject extends AbstractObject implements Movable
 
     }
 
+     /* Breadcrumbs */
+
+    public void initCrumbs()
+    {
+        crumbs = new BreadCrumbs(this.app, this);
+    }
 
     public void setCrumbTrail(boolean crumbTrail)
     {

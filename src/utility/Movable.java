@@ -1,5 +1,6 @@
 package utility;
 
+import objects.GameObject;
 import processing.core.PVector;
 
 /**
@@ -14,6 +15,8 @@ public interface Movable
     void Align(PVector target);
 
     void Wander();
+
+    void Pursue(GameObject target);
 
     void stopMoving();
 
