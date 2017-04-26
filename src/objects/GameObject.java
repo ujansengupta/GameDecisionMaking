@@ -1,6 +1,8 @@
 package objects;
 
 import engine.Engine;
+import environment.Environment;
+import environment.Graph;
 import movement.*;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -11,6 +13,8 @@ import utility.Movable;
 import utility.Utility;
 import environment.Obstacle;
 
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class GameObject extends AbstractObject implements Movable
@@ -20,7 +24,7 @@ public class GameObject extends AbstractObject implements Movable
     protected float MAX_LIFE;
     protected float size;
 
-    protected PApplet app;
+    public PApplet app;
     protected PShape shape;
     protected PVector color;
     protected PVector lookAheadPosition;
@@ -57,12 +61,6 @@ public class GameObject extends AbstractObject implements Movable
 
     public void update()
     {
-        if (outOfBounds())
-        {
-            Align(GameConstants.SCR_CENTER);
-            Seek(GameConstants.SCR_CENTER);
-        }
-
         velocity.add(linearAcc);
         rotation += angularAcc;
 
@@ -178,6 +176,12 @@ public class GameObject extends AbstractObject implements Movable
     }
 
     @Override
+    public void Flee(GameObject target)
+    {
+        setVelocity(Flee.getKinematic(this, PVector.add(target.getPosition(), target.getVelocity())).velocity);
+    }
+
+    @Override
     public void stopMoving()
     {
         this.velocity.setMag(0);
@@ -201,11 +205,39 @@ public class GameObject extends AbstractObject implements Movable
         lookAheadPosition.x += position.x;
         lookAheadPosition.y += position.y;
 
-        for (Obstacle o : Engine.staticObjects)
-            if (o.contains(Utility.getGridLocation(lookAheadPosition)))
-                return true;
+
+        if (Environment.invalidNodes.contains(Utility.getGridIndex(lookAheadPosition)))
+            return true;
 
         return false;
+    }
+
+    public boolean obstacleNearby()
+    {
+        int index = getGridIndex();
+        int nodeAbove = index - (int) (GameConstants.NUM_TILES.x);
+        int nodeBelow = index + (int) (GameConstants.NUM_TILES.x);
+
+        return (Environment.invalidNodes.contains(index) || Environment.invalidNodes.contains(index - 1)
+                || Environment.invalidNodes.contains(index + 1) || Environment.invalidNodes.contains(nodeAbove)
+                || Environment.invalidNodes.contains(nodeAbove + 1) || Environment.invalidNodes.contains(nodeAbove - 1)
+                || Environment.invalidNodes.contains(nodeBelow) || Environment.invalidNodes.contains(nodeBelow + 1)
+                || Environment.invalidNodes.contains(nodeBelow - 1));
+    }
+
+    public boolean hasLOS(PVector target)
+    {
+        PVector lightBeacon = new PVector(position.x, position.y);
+        PVector targetVelocity = PVector.sub(target, lightBeacon).normalize().mult(maxVel);
+
+        while (Utility.getGridIndex(lightBeacon) != Utility.getGridIndex(target))
+        {
+            lightBeacon.add(targetVelocity);
+            if (Environment.invalidNodes.contains(Utility.getGridIndex(lightBeacon)))
+                return false;
+        }
+
+        return true;
     }
 
     public void takeDamage(float damage)
@@ -236,7 +268,7 @@ public class GameObject extends AbstractObject implements Movable
         return new PVector((int) (position.x/GameConstants.TILE_SIZE.x), (int)(position.y/GameConstants.TILE_SIZE.y));
     }
 
-    public Integer getGridIndex()
+    public int getGridIndex()
     {
         return (int)(position.y/GameConstants.TILE_SIZE.y) * (int) GameConstants.NUM_TILES.x + (int) (position.x/GameConstants.TILE_SIZE.x);
     }

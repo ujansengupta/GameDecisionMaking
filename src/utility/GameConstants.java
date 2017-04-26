@@ -24,7 +24,7 @@ public class GameConstants
     public static final float DEFAULT_ANGULAR_ACC = 0;
     public static final float DEFAULT_ROT = 0;
 
-    public static final float DEFAULT_MAX_VEL = 2;
+    public static final float DEFAULT_MAX_VEL = 1;
     public static final float DEFAULT_MAX_linearACC = 1;
 
     public static final float DEFAULT_MAX_ROTATION = 2 * (float)Math.PI;
@@ -42,7 +42,7 @@ public class GameConstants
     public static final float DEFAULT_BULLET_SPEED = 7;
     public static final PVector DEFAULT_BULLET_SIZE = new PVector(5, 5);
 
-    public static final int DEFAULT_LOOKAHEAD = 50;
+    public static final int DEFAULT_LOOKAHEAD = 20;
 
     public static final float DEFAULT_CONTACT_DAMAGE = 20;
 

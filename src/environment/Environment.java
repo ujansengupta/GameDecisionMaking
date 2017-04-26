@@ -44,6 +44,8 @@ public class Environment
 
     public void update()
     {
+        //drawGraph();
+        //drawInvalidNodes();
         drawObstacles();
     }
 
@@ -90,10 +92,10 @@ public class Environment
         /* Clockwise from left */
 
         /* Outer layer */
-        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.25f * numTiles.y), new PVector(15, 5))); //top
-        obstacles.add(new Obstacle(app, new PVector(0.25f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //left
-        obstacles.add(new Obstacle(app, new PVector(0.75f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //right
-        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.75f * numTiles.y), new PVector(15, 5))); //bot
+        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.2f * numTiles.y), new PVector(15, 5))); //top
+        obstacles.add(new Obstacle(app, new PVector(0.2f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //left
+        obstacles.add(new Obstacle(app, new PVector(0.8f * numTiles.x, 0.5f * numTiles.y), new PVector(5, 17))); //right
+        obstacles.add(new Obstacle(app, new PVector(0.5f * numTiles.x, 0.8f * numTiles.y), new PVector(15, 5))); //bot
 
         /* Tooth nodes are not considered invalid */
 
@@ -114,9 +116,12 @@ public class Environment
 
     public static void colorNode(int index, PVector color, float alpha)
     {
+        app.rectMode(PConstants.CORNER);
         app.fill(color.x, color.y, color.z, alpha);
         app.rect((index % numTiles.x) * tileSize.x, (float)Math.floor(index / numTiles.y) * tileSize.y, tileSize.x, tileSize.y);
         app.noFill();
+        app.rectMode(PConstants.CENTER);
+
     }
 
 }

@@ -16,16 +16,18 @@ import java.util.Collections;
 
 public class PathFollower
 {
-    private PVector numTiles;
-    private PVector tileSize;
-
-    private GameObject character;
     private ArrayList<Integer> pathIndices;
     private ArrayList<PVector> path;
-    private PVector currentTarget;
     private int targetIndex = 0;
     private int characterGridIndex;
     private int targetGridIndex;
+
+    private PVector numTiles;
+    private PVector tileSize;
+    private PVector currentTarget;
+    private PVector closedListColor = new PVector(71, 153 , 131);
+    private PVector openListColor = new PVector(153, 71 , 97);
+    private GameObject character;
 
     private GraphSearch search;
 
@@ -60,8 +62,11 @@ public class PathFollower
         int endIndex = (int) (endNode.y * numTiles.y + endNode.x);
 
 
-        for (; Environment.invalidNodes.contains(endIndex); endIndex--);
-        for (; Environment.invalidNodes.contains(startIndex); startIndex--);
+        if (Environment.invalidNodes.contains(startIndex))
+            startIndex = checkNearestValidNode(startIndex, 1);
+
+        if (Environment.invalidNodes.contains(endIndex))
+            endIndex = checkNearestValidNode(endIndex, 1);
 
         pathIndices = search.aStarSearch(startIndex, endIndex, Environment.gameGraph);
 
@@ -74,6 +79,40 @@ public class PathFollower
         this.currentTarget = this.path.get(targetIndex);
 
         //renderSearch();
+    }
+
+    public int checkNearestValidNode(int index, int layer)
+    {
+        int nodeAbove = index - (int) (GameConstants.NUM_TILES.x * layer);
+        int nodeBelow = index + (int) (GameConstants.NUM_TILES.x * layer);
+
+        if (!Environment.invalidNodes.contains(nodeAbove))
+            return nodeAbove;
+
+        if (!Environment.invalidNodes.contains(nodeAbove - 1))
+            return (nodeAbove - 1);
+
+        if (!Environment.invalidNodes.contains(nodeAbove + 1))
+            return (nodeAbove + 1);
+
+        if (!Environment.invalidNodes.contains(nodeBelow))
+            return nodeBelow;
+
+        if (!Environment.invalidNodes.contains(nodeBelow - 1))
+            return (nodeBelow - 1);
+
+        if (!Environment.invalidNodes.contains(nodeBelow + 1))
+            return (nodeBelow + 1);
+
+        if (!Environment.invalidNodes.contains(index - layer))
+            return (index - 1);
+
+        if (!Environment.invalidNodes.contains(index + layer))
+            return (index + 1);
+
+        return checkNearestValidNode(index, layer+1);
+
+
     }
 
     public void followPath()
@@ -108,12 +147,12 @@ public class PathFollower
             float alpha = 200;
             for (int node : search.getClosedList())
             {
-                Environment.colorNode(node, new PVector(71, 153 , 131), alpha);
+                Environment.colorNode(node, closedListColor, alpha);
             }
 
             for (int node : pathIndices)
             {
-                Environment.colorNode(node, new PVector(153, 71 , 97), alpha + 25);
+                Environment.colorNode(node, openListColor, alpha + 25);
             }
 
             Environment.colorNode(pathIndices.get(0), new PVector(255, 0, 0), alpha);

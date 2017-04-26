@@ -20,6 +20,8 @@ public interface Movable
 
     void stopMoving();
 
+    void Flee(GameObject target);
+
     boolean outOfBounds();
 
 }

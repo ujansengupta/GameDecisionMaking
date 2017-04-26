@@ -19,7 +19,7 @@ public class Player extends GameObject
 {
     public enum State
     {
-        WANDER, SEEKCENTER, SEEKTARGET
+        WANDER, SEEKCENTER, SEEKTARGET, FLEE
     }
 
     private PApplet app;
@@ -34,6 +34,7 @@ public class Player extends GameObject
 
     private static float DEFAULT_ORIENTATION = 0;
     private static final int DEFAULT_PLAYER_LIFE = 100;
+    private static float DEFAULT_MAXVEL = 1.5f;
 
     private PVector scrCenter = GameConstants.SCR_CENTER;
 
@@ -43,6 +44,7 @@ public class Player extends GameObject
     public PVector playerTarget;
     public static float BulletDamage = 10;
 
+    public static float enemyDetectionRadius = 75;
 
     public State state;
 
@@ -52,7 +54,7 @@ public class Player extends GameObject
         super (app, color, size, DEFAULT_X, DEFAULT_Y, DEFAULT_ORIENTATION, DEFAULT_PLAYER_LIFE);
         this.app = app;
 
-        setMaxVel(1f);
+        setMaxVel(DEFAULT_MAXVEL);
         setMaxAngularAcc(0.001f);
         setAngularROS(1.5f);
         setAngularROD(2.5f);
@@ -74,6 +76,14 @@ public class Player extends GameObject
         behaviour();
         super.update();
 
+        /*if (life < DEFAULT_PLAYER_LIFE)
+            System.out.println("Here");*/
+
+        setMaxVel(DEFAULT_MAXVEL * ((float) life/DEFAULT_PLAYER_LIFE));
+
+        if(life <= 0)
+            Engine.reset();
+
         for (Iterator<Bullet> i = bullets.iterator(); i.hasNext(); )
         {
             Bullet b = i.next();
@@ -87,46 +97,63 @@ public class Player extends GameObject
 
     public void behaviour()
     {
-        if (obstacleCollisionDetected())
+        /*if (Math.abs(PVector.sub(Engine.enemy.getPosition(), position).mag()) < enemyDetectionRadius)
+        {
+            state = State.FLEE;
+        }*/
+
+        if (outOfBounds() || obstacleCollisionDetected())
         {
             state = State.SEEKCENTER;
             pathfollower.findPath(this.getGridLocation(), GameConstants.GRAPH_CENTER);
-            setMaxVel(2f);
         }
 
         switch(state)
         {
             case SEEKTARGET:
+                if (!hasLOS(playerTarget))
+                {
+                    state = State.WANDER;
+                    break;
+                }
+
                 Align(playerTarget);
                 Arrive(playerTarget);
                 if (velocity.mag() > maxVel - 0.1)
-                {
                     state = State.WANDER;
-                    setMaxVel(1f);
-                }
                 break;
 
             case SEEKCENTER:
                 pathfollower.followPath();
-                if (pathfollower.reachedTarget) {
+                //pathfollower.renderSearch();
+                if (pathfollower.reachedTarget)
                     state = State.WANDER;
-                    setMaxVel(1f);
-                }
                 break;
 
             case WANDER:
-                setMaxAngularAcc(0.001f);
                 Wander();
                 break;
+
+            /*case FLEE:
+                Flee(Engine.enemy);
+                break;*/
         }
     }
 
     public void updateTarget()
     {
         playerTarget = new PVector(app.mouseX, app.mouseY);
-        setMaxVel(3f);
-        setMaxAngularAcc(GameConstants.DEFAULT_MAX_angularACC);
+        setMaxVel(1.5f);
+        //setMaxAngularAcc(GameConstants.DEFAULT_MAX_angularACC);
         state = State.SEEKTARGET;
+    }
+
+    public void reset()
+    {
+        setPosition(new PVector(DEFAULT_X, DEFAULT_Y));
+        setMaxVel(DEFAULT_MAXVEL);
+        setLife(DEFAULT_PLAYER_LIFE);
+        state = State.WANDER;
     }
 
 }

@@ -26,7 +26,7 @@ public class Utility
         return((Math.abs(target.x - obj.getPosition().x) <= 20f) && (Math.abs(target.y - obj.getPosition().y) <= 20f));
     }
 
-    public static Integer getGridIndex(PVector position)
+    public static int getGridIndex(PVector position)
     {
         return (int)(position.y/GameConstants.TILE_SIZE.y) * (int) GameConstants.NUM_TILES.x + (int) (position.x/GameConstants.TILE_SIZE.x);
     }
