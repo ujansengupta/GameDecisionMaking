@@ -64,11 +64,12 @@ public class Enemy extends GameObject
 
     public void update()
     {
-        if (hasReachedTarget())
-            Engine.reset();
-
         if (useLearntTree)
+        {
             behaviour();
+            if (hasReachedTarget())
+                Engine.reset();
+        }
         else
             behaviourTree.run();
 

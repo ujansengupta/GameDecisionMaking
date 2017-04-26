@@ -1,5 +1,6 @@
 package game_trees.enemy_leafnodes;
 
+import engine.Engine;
 import game_trees.composite_nodes.Task;
 import objects.Enemy;
 
@@ -16,6 +17,7 @@ public class ReachedTargetAction extends Task
     @Override
     public returnType run()
     {
+        Engine.reset();
         return returnType.SUCCEEDED;
     }
 }
